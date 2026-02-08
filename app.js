@@ -164,7 +164,7 @@ async function sendChatMessage() {
 }
 
 function runDemo() {
-    const mockImg = "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?auto=format&fit=crop&q=80&w=1000";
+    const mockImg = "https://img.freepik.com/free-vector/gradient-ui-ux-landing-page_52683-70955.jpg?semt=ais_user_personalization&w=740&q=80";
     currentImage = mockImg;
     const mockData = {
         score: 58,
