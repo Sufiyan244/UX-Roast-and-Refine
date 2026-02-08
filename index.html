@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Roast & Refine | AI Design Auditor</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+</head>
+
+<body
+    class="bg-slate-50 text-slate-900 dark:bg-[#0f172a] dark:text-slate-100 min-h-screen transition-colors duration-300">
+
+    <nav class="sticky top-0 z-50 glass border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="bg-brand-500 text-white p-1.5 rounded-lg"><i data-lucide="eye" class="w-5 h-5"></i></div>
+                <span class="font-display font-bold text-xl">UX Roast<span class="text-brand-500">&</span>Refine</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- New Image Button (Hidden initially) -->
+                <button id="new-scan-btn" onclick="resetApp()"
+                    class="hidden flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-500 hover:text-white transition-all text-sm font-medium">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> New Scan
+                </button>
+                <button id="theme-toggle"
+                    class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Upload Section -->
+        <section id="upload-section" class="text-center py-12">
+            <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">Brutal UI Feedback.</h1>
+            <p class="text-slate-500 dark:text-slate-400 mb-8 max-w-xl mx-auto">Upload your design for an AI audit,
+                roast, and ✨ automatic code improvements.</p>
+
+            <div id="drop-zone"
+                class="max-w-xl mx-auto border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-12 transition-all hover:border-brand-500 hover:bg-brand-50/30 cursor-pointer">
+                <input type="file" id="file-input" class="hidden" accept="image/*">
+                <div class="space-y-4">
+                    <div
+                        class="w-16 h-16 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mx-auto">
+                        <i data-lucide="upload" class="w-8 h-8"></i>
+                    </div>
+                    <p class="font-medium">Drop UI screenshot here or click to browse</p>
+                    <button id="demo-btn" class="text-brand-500 text-sm font-semibold hover:underline">Or try with Demo
+                        Mock</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <section id="processing-state" class="hidden py-20 text-center">
+            <div class="inline-block relative w-16 h-16 mb-4">
+                <div class="absolute inset-0 border-4 border-brand-500/20 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-brand-500 rounded-full border-t-transparent animate-spin">
+                </div>
+            </div>
+            <h2 class="text-xl font-display font-bold">✨ Gemini is Auditing...</h2>
+            <p id="loading-msg" class="text-slate-500 mt-2">Analyzing layout and accessibility...</p>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-dashboard"
+            class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-700">
+            <!-- Left: Sidebar / Image -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="glass rounded-2xl overflow-hidden p-2">
+                    <div class="relative group">
+                        <img id="preview-img" class="w-full rounded-xl object-cover shadow-sm" src="" alt="Source">
+                        <div id="scan-line" class="scan-line animate-scan"></div>
+                    </div>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="font-bold mb-4 flex items-center gap-2 text-brand-500"><i data-lucide="users"
+                            class="w-4 h-4"></i> ✨ Persona Simulator</h3>
+                    <p class="text-xs text-slate-500 mb-4 italic">How would different users feel about this UI?</p>
+                    <div class="grid grid-cols-1 gap-2">
+                        <button onclick="simulatePersona('A visually impaired user needing high contrast')"
+                            class="text-left px-3 py-2 rounded-lg text-sm bg-slate-100 dark:bg-slate-800 hover:bg-brand-500 hover:text-white transition-all">👓
+                            Low Vision User</button>
+                        <button onclick="simulatePersona('A busy executive who wants information at a glance')"
+                            class="text-left px-3 py-2 rounded-lg text-sm bg-slate-100 dark:bg-slate-800 hover:bg-brand-500 hover:text-white transition-all">🏃
+                            Busy Executive</button>
+                        <button onclick="simulatePersona('A tech-illiterate senior citizen')"
+                            class="text-left px-3 py-2 rounded-lg text-sm bg-slate-100 dark:bg-slate-800 hover:bg-brand-500 hover:text-white transition-all">👴
+                            Senior Citizen</button>
+                    </div>
+                    <div id="simulation-output"
+                        class="mt-4 p-4 rounded-lg bg-slate-100 dark:bg-slate-900/80 text-xs italic hidden border border-slate-200 dark:border-slate-800 leading-relaxed">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Analysis -->
+            <div class="lg:col-span-8 space-y-6">
+                <div class="flex items-center justify-between glass p-6 rounded-2xl border-l-4 border-brand-500">
+                    <div>
+                        <h2 class="text-2xl font-display font-bold">Overall UX Score</h2>
+                        <p class="text-slate-500 text-sm">Design System Grade</p>
+                    </div>
+                    <div class="text-4xl font-display font-black text-brand-500" id="score-val">0</div>
+                </div>
+
+                <div
+                    class="bg-orange-50 dark:bg-orange-900/10 p-6 rounded-2xl border border-orange-200 dark:border-orange-800 shadow-sm">
+                    <h3 class="font-bold text-orange-600 dark:text-orange-400 flex items-center gap-2 mb-2">
+                        <i data-lucide="flame" class="w-5 h-5"></i> The Roast
+                    </h3>
+                    <p id="roast-val" class="italic text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+                </div>
+
+                <div id="fixes-container" class="space-y-6">
+                    <!-- Fixes with automatic code injected here -->
+                </div>
+
+                <!-- Chat Box (Design Consultant) -->
+                <div class="glass p-6 rounded-2xl mt-8 border-t-2 border-brand-500">
+                    <h3 class="font-bold mb-4 flex items-center gap-2 text-brand-500">
+                        <i data-lucide="message-square" class="w-5 h-5"></i> ✨ Design Consultant
+                    </h3>
+                    <div id="chat-box"
+                        class="h-64 overflow-y-auto space-y-4 mb-4 p-4 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div class="text-left">
+                            <span
+                                class="inline-block bg-white dark:bg-slate-800 px-3 py-2 rounded-xl text-sm shadow-sm border border-slate-100 dark:border-slate-700">
+                                Hi! I'm your UX expert. Ask me for color palette ideas, font pairings, or specific
+                                accessibility rules.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="chat-input" placeholder="Ask a UX question..."
+                            class="flex-grow bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 outline-none shadow-sm transition-all">
+                        <button onclick="sendChatMessage()"
+                            class="bg-brand-500 text-white px-4 py-2 rounded-xl hover:bg-brand-600 transition-all shadow-lg shadow-brand-500/20">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+<script src="app.js"></script>
+</html>
