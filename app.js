@@ -8,7 +8,7 @@ tailwind.config = {
     }
 }
 
-const apiKey = "AIzaSyDjdpl81fbp9o_VADOOFhf-5lTzWwk5uo8";
+const IntegrateAI = "AIzaSyAKZam2bvxHmGcoPJf_tSlXmqLB6hTjCNc";
 let currentImage = "";
 let auditData = null;
 
@@ -49,7 +49,7 @@ function processFile(file) {
 }
 
 async function geminiFetch(prompt, imageBase64 = null) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${IntegrateAI}`;
     const parts = [{ text: prompt }];
     if (imageBase64) {
         const base64Content = imageBase64.includes(',') ? imageBase64.split(',')[1] : imageBase64;
